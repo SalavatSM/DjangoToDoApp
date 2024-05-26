@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">To-Do List</h1>
+
+            <form method="post" action="{% url 'add_task' %}">
+                {% csrf_token %}
+                <div class="field">
+                    <div class="control">
+                        {{ form.title }}
+                    </div>
+                </div>
+                <div class="control">
+                    <button class="button is-primary" type="submit">Add task</button>
+                </div>
+            </form>
+
+            <hr>
+
+            <h2 class="subtitle">Current tasks</h2>
+            <ul>
+                {% for task in tasks %}
+                    <li>
+                        <form method="post" action="{% url 'complete_task' task.id %}">
+                            {% csrf_token %}
+                            <label class="checkbox">
+                                <input type="checkbox" onchange="this.form.submit()" {% if task.completed %}checked{% endif %}>
+                                {{ task.title }}
+                            </label>
+                            <a href="{% url 'delete_task' task.id %}" class="button is-small is-danger">Delete</a>
+                        </form>
+                    </li>
+                {% empty %}
+                    <p>No tasks</p>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+</body>
+</html>
